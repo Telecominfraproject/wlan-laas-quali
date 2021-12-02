@@ -204,7 +204,9 @@ class ApV2Driver (ResourceDriverInterface):
                 other_aps = []
 
                 for each in api_session.FindResources(resourceModel=resource.cloudshell_model_name).Resources:
-                    if context.resource.name != each.Name and context.resource.name.split(' - ')[1] == each.Name .split(' - ')[1]:
+                    temp1 = context.resource.name.split(' - ')
+                    temp2 = each.Name.split(' - ')
+                    if context.resource.name != each.Name and temp1[len(temp1) - 1] == temp2[len(temp2) - 1]:
                         other_aps.append(each)
 
                 if other_aps:
