@@ -50,7 +50,7 @@ node_types:
         default: eth2
         tags: [setting, configuration, search_filter, abstract_filter]
         constraints:
-          - valid_values: [eth1, eth2, 1.1.eth2]
+          - valid_values: [eth1, eth2, 1.1.eth2, 1.1.eth1]
       TG 2dot4G Station Name:
         type: string
         default: wlan0
