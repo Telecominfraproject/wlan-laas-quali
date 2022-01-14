@@ -230,7 +230,7 @@ class ApV2Driver (ResourceDriverInterface):
                         s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                         s.connect(hostname=terminal_ip, username=terminal_user,
                                   password=terminal_pass)
-                        command = "cd /tmp && git clone https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master"
+                        command = "cd /tmp && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master"
 
                         command2 = "cd /tmp/wlan-testing/tools && python3 {} --host {} --user {} --password {} --action {} --port {}".format(
                             PDU_SCRIPT_NAME, hostname, username, password, cmd, port)
