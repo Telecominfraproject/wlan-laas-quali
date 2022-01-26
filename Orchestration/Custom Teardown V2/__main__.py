@@ -75,11 +75,33 @@ def execute_terminal_script(sandbox, components):
                 pool.close()
                 pool.join()
 
+                for i in range(len(ap_resources)):
+                    if async_results[i].successful() == False:
+                        raise Exception('Caught exception in Factory Reset')
+
             except Exception as e:
                 sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, 'Failed: '+ e.message)
                 sandbox.report_error("Failed to run script, Error is: " + e.message, raise_error=True)
     else:
         sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, "No Terminal Server in reservation")
+
+
+def check_lab_type(sandbox):
+    flag = False
+    for resource in sandbox.automation_api.GetReservationDetails(sandbox.id).ReservationDescription.Resources:
+        if resource.ResourceModelName == 'ApV2':
+            details = sandbox.automation_api.GetResourceDetails(resource.Name)
+            break
+
+    for attribute in details.ResourceAttributes:
+        if attribute.Name == "Lab Type":
+            return_val = attribute.Value
+            break
+
+    if return_val in ["Basic", "Advanced"]:
+        flag = True
+
+    return flag
 
 sandbox = Sandbox()
 
@@ -88,6 +110,6 @@ DefaultTeardownWorkflow().register(sandbox)
 sandbox.workflow.before_teardown_started(helm_uninstall, [])
 sandbox.workflow.before_teardown_started(ap_redirect, [])
 sandbox.workflow.before_teardown_started(execute_terminal_script, [])
-sandbox.workflow.before_teardown_started(power_on_other_aps, [])
-
+if check_lab_type(sandbox):
+    sandbox.workflow.before_teardown_started(power_on_other_aps, [])
 sandbox.execute_teardown()
