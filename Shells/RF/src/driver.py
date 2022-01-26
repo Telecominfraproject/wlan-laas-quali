@@ -44,7 +44,7 @@ class EnclosureChamberDriver (ResourceDriverInterface):
         #resource.vendor = 'specify the shell vendor'
         #resource.model = 'specify the shell model'
 
-        for i in range(9):
+        for i in range(10):
             port = ResourcePort('Slot' + str(i))
             resource.add_sub_resource(str(i), port)
 
