@@ -1,0 +1,65 @@
+---
+description: "TOSCA based resource shell\n"
+imports:
+  -
+    cloudshell_standard: cloudshell_resource_standard_2_0_3.yaml
+metadata:
+  template_author: Anonymous
+  template_icon: shell-icon.png
+  template_name: Phone
+  template_version: "0.1.0"
+node_types:
+  vendor.resource.Phone:
+    artifacts:
+      driver:
+        file: PhoneDriver.zip
+        type: tosca.artifacts.File
+      icon:
+        file: shell-icon.png
+        type: tosca.artifacts.File
+    capabilities:
+      auto_discovery_capability:
+        properties:
+          OS:
+            constraints:
+              -
+                valid_values:
+                  - iOS
+                  - android
+            default: android
+            description: "Describes what OS the phone is"
+            type: string
+          auto_discovery_description:
+            default: "Describe the auto discovery"
+            type: string
+          enable_auto_discovery:
+            default: true
+            type: boolean
+          inventory_description:
+            default: "Describe the resource shell template"
+            type: string
+          model:
+            description: "Describes what model the phone is"
+            type: string
+          serial:
+            description: "Describes what serial number the phone is"
+            type: string
+        type: cloudshell.capabilities.AutoDiscovery
+    derived_from: cloudshell.nodes.GenericResource
+    properties:
+      OS:
+        constraints:
+          -
+            valid_values:
+              - iOS
+              - android
+        default: android
+        description: "Describes what OS the phone is"
+        type: string
+      model:
+        description: "Describes what model the phone is"
+        type: string
+      serial:
+        description: "Describes what serial number the phone is"
+        type: string
+tosca_definitions_version: tosca_simple_yaml_1_0
