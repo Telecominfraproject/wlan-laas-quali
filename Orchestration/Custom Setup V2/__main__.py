@@ -2,6 +2,7 @@ from cloudshell.workflow.orchestration.sandbox import Sandbox
 from cloudshell.workflow.orchestration.setup.default_setup_orchestrator import DefaultSetupWorkflow
 from cloudshell.api.cloudshell_api import InputNameValue, AttributeNameValue
 from multiprocessing.pool import ThreadPool
+import time
 
 
 def helm_install(sandbox, components):
@@ -83,6 +84,9 @@ def factory_reset(api,res_id,ap_res,terminal_server):
 
         api.WriteMessageToReservationOutput(sandbox.id, "Running on {}".format(ap_res.Name))
         res = api.ExecuteCommand(res_id,terminal_server,'Resource',"Run_Ap_Factory_Reset",inputs,printOutput = True)
+        api.WriteMessageToReservationOutput(sandbox.id, "Sleep timer started after AP Factory Reset for 3 minutes...")
+        time.sleep(180)
+        api.WriteMessageToReservationOutput(sandbox.id, "Sleep timer ended")
 
      #   res = api.ExecuteResourceConnectedCommand(res_id, ap_res.Name,"Run_Script",inputs)
 
