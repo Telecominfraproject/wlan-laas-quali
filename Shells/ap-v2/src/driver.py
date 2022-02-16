@@ -127,7 +127,10 @@ class ApV2Driver (ResourceDriverInterface):
 
                 resource = ApV2.create_from_context(context)
                 #redirect_url = URL_TEMPLATE.format(context.reservation.reservation_id.split('-')[0])
-                redirect_url = URL_TEMPLATE.format(namespace)
+                if "." in namespace:
+                    redirect_url = namespace
+                else:
+                    redirect_url = URL_TEMPLATE.format(namespace)
 
                 working_dir = tempfile.mkdtemp()
 
