@@ -88,10 +88,12 @@ class ControllerVmDriver (ResourceDriverInterface):
                     s = paramiko.SSHClient()
                     s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     s.connect(hostname=context.resource.address, username=username, password=api_session.DecryptPassword(password).Value)
-                    command = 'cd /tmp && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master && cd tools && chmod +x ap_tools.py'
+                    command = 'cd /tmp && mkdir {} && cd {} && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master && cd tools && chmod +x ap_tools.py'.format( res_id, res_id)
 
-                    command2 = 'cd /tmp/wlan-testing/tools && python3 ap_tools.py --host {} --jumphost {} --tty {} --port {} --username {} --password {} --cmd "jffs2reset -y -r"'.format(
-                              ap_ip, ap_jumphost, ap_tty, ap_port, ap_user, api_session.DecryptPassword(ap_password).Value)
+                    command2 = 'cd /tmp/{}/wlan-testing/tools && python3 ap_tools.py --host {} --jumphost {} --tty {} --port {} --username {} --password {} --cmd "jffs2reset -y -r"'.format(
+                              res_id, ap_ip, ap_jumphost, ap_tty, ap_port, ap_user, api_session.DecryptPassword(ap_password).Value)
+
+                    command3 = 'cd /tmp && rm -rf {}'.format(res_id)
 
                     (stdin, stdout, stderr) = s.exec_command(command)
                     (stdin2, stdout2, stderr2) = s.exec_command(command2)
@@ -109,6 +111,9 @@ class ControllerVmDriver (ResourceDriverInterface):
                     else:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
                                                                     'AP Factory Reset Complete.')
+
+                    (stdin3, stdout3, stderr3) = s.exec_command(command3)
+
                     s.close()
 
                     return output

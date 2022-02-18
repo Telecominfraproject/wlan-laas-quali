@@ -220,8 +220,10 @@ class ApDriver (ResourceDriverInterface):
                         s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                         s.connect(hostname=terminal_ip, username=terminal_user,
                                   password=terminal_pass)
-                        command = "cd /tmp && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing/tools && python3 {} --host {} --user {} --password {} --action {} --port '{}'; cd /tmp && rm -f -r wlan-testing".format(
-                            PDU_SCRIPT_NAME, hostname, username, password, cmd, port)
+                        command = "cd /tmp && mkdir {} && cd {} && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing/tools && python3 {} --host {} --user {} --password {} --action {} --port '{}'; cd /tmp && rm -f -r wlan-testing".format(
+                            res_id, res_id, PDU_SCRIPT_NAME, hostname, username, password, cmd, port)
+
+                        command3 = 'cd /tmp && rm -rf {}'.format(res_id)
 
                         (stdin, stdout, stderr) = s.exec_command(command)
                         output = ''
@@ -235,6 +237,8 @@ class ApDriver (ResourceDriverInterface):
                         else:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
                                                                         '{} Powered {}.'.format(each.Name, cmd))
+
+                        (stdin3, stdout3, stderr3) = s.exec_command(command3)
                         s.close()
 
                 else:

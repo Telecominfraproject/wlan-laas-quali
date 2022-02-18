@@ -127,7 +127,10 @@ class ApV2Driver (ResourceDriverInterface):
 
                 resource = ApV2.create_from_context(context)
                 #redirect_url = URL_TEMPLATE.format(context.reservation.reservation_id.split('-')[0])
-                redirect_url = URL_TEMPLATE.format(namespace)
+                if "." in namespace:
+                    redirect_url = namespace
+                else:
+                    redirect_url = URL_TEMPLATE.format(namespace)
 
                 working_dir = tempfile.mkdtemp()
 
@@ -230,10 +233,12 @@ class ApV2Driver (ResourceDriverInterface):
                         s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                         s.connect(hostname=terminal_ip, username=terminal_user,
                                   password=terminal_pass)
-                        command = "cd /tmp && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master"
+                        command = "cd /tmp && mkdir {} && cd {} && git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master".format(res_id, res_id)
 
-                        command2 = "cd /tmp/wlan-testing/tools && python3 {} --host {} --user {} --password {} --action {} --port {}".format(
-                            PDU_SCRIPT_NAME, hostname, username, password, cmd, port)
+                        command2 = "cd /tmp/{}/wlan-testing/tools && python3 {} --host {} --user {} --password {} --action {} --port {}".format(
+                            res_id, PDU_SCRIPT_NAME, hostname, username, password, cmd, port)
+
+                        command3 = 'cd /tmp && rm -rf {}'.format(res_id)
 
                         (stdin, stdout, stderr) = s.exec_command(command)
                         (stdin2, stdout2, stderr2) = s.exec_command(command2)
@@ -249,6 +254,8 @@ class ApV2Driver (ResourceDriverInterface):
                             raise Exception(errors)
                         else:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id, '{} Powered {}.'.format(each.Name, cmd))
+
+                        (stdin3, stdout3, stderr3) = s.exec_command(command3)
                         s.close()
 
                 else:
