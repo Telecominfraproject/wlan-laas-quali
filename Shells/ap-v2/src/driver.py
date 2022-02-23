@@ -241,7 +241,15 @@ class ApV2Driver (ResourceDriverInterface):
                         command3 = 'cd /tmp && rm -rf {}'.format(res_id)
 
                         (stdin, stdout, stderr) = s.exec_command(command)
+                        exit_status = stdout.channel.recv_exit_status()
+                        if exit_status == 0:
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+
                         (stdin2, stdout2, stderr2) = s.exec_command(command2)
+                        exit_status = stdout2.channel.recv_exit_status()
+                        if exit_status == 0:
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
+                                                                        'command 2 executed')
 
                         output = ''
                         errors = ''
