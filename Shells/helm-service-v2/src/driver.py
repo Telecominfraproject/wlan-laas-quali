@@ -53,7 +53,7 @@ class HelmServiceV2Driver (ResourceDriverInterface):
         """
         pass
 
-    def helm_install(self, context, chart_version, owgw_version, owsec_version, owfms_version, owgwui_version, owprov_version, owprovui_version):
+    def helm_install(self, context, chart_version, owgw_version, owsec_version, owfms_version, owgwui_version, owprov_version, owprovui_version, owanalytics_version, owsub_version):
 
         api_session = CloudShellSessionContext(context).get_api()
         res_id = context.reservation.reservation_id
@@ -97,6 +97,8 @@ class HelmServiceV2Driver (ResourceDriverInterface):
         os.environ['OWFMS_VERSION'] = owfms_version
         os.environ['OWPROV_VERSION'] = owprov_version
         os.environ['OWPROVUI_VERSION'] = owprovui_version
+        os.environ['OWANALYTICS_VERSION'] = owanalytics_version
+        os.environ['OWSUB_VERSION'] = owsub_version
 
         os.environ['VALUES_FILE_LOCATION'] = 'values.ucentral-qa.yaml'
         os.environ['RTTY_TOKEN'] = api_session.DecryptPassword(service_resource.rtty_token).Value
