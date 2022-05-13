@@ -22,13 +22,17 @@ def helm_install(sandbox, components):
                     owgwui_version = InputNameValue(Name='owgwui_version', Value=sandbox.global_inputs['owgwui Version'])
                     owprov_version = InputNameValue(Name='owprov_version', Value=sandbox.global_inputs['owprov Version'])
                     owprovui_version = InputNameValue(Name='owprovui_version', Value=sandbox.global_inputs['owprovui Version'])
+                    owanalytics_version = InputNameValue(Name='owanalytics_version', Value=sandbox.global_inputs['owanalytics Version'])
+                    owsub_version = InputNameValue(Name='owsub_version', Value=sandbox.global_inputs['owsub Version'])
                     sandbox.automation_api.ExecuteCommand(sandbox.id, each.Alias, "Service", 'helm_install', [chart_version,
                                                                                                               owgw_version,
                                                                                                               owsec_version,
                                                                                                               owfms_version,
                                                                                                               owgwui_version,
                                                                                                               owprov_version,
-                                                                                                              owprovui_version])
+                                                                                                              owprovui_version,
+                                                                                                              owanalytics_version,
+                                                                                                              owsub_version])
         else:
             sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, 'Using Existing SDK')
 
