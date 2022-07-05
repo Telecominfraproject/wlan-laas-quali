@@ -24,6 +24,7 @@ def helm_install(sandbox, components):
                     owprovui_version = InputNameValue(Name='owprovui_version', Value=sandbox.global_inputs['owprovui Version'])
                     owanalytics_version = InputNameValue(Name='owanalytics_version', Value=sandbox.global_inputs['owanalytics Version'])
                     owsub_version = InputNameValue(Name='owsub_version', Value=sandbox.global_inputs['owsub Version'])
+                    owrrm_version = InputNameValue(Name='owrrm_version', Value=sandbox.global_inputs['owrrm Version'])
                     sandbox.automation_api.ExecuteCommand(sandbox.id, each.Alias, "Service", 'helm_install', [chart_version,
                                                                                                               owgw_version,
                                                                                                               owsec_version,
@@ -32,7 +33,8 @@ def helm_install(sandbox, components):
                                                                                                               owprov_version,
                                                                                                               owprovui_version,
                                                                                                               owanalytics_version,
-                                                                                                              owsub_version])
+                                                                                                              owsub_version,
+                                                                                                              owrrm_version])
         else:
             sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, 'Using Existing SDK')
 
