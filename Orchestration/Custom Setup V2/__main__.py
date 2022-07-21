@@ -4,6 +4,14 @@ from cloudshell.api.cloudshell_api import InputNameValue, AttributeNameValue
 from multiprocessing.pool import ThreadPool
 import time
 
+def rename_sandbox(sandbox,components):
+    sandbox_name = sandbox.automation_api.GetReservationDetails(reservationId=sandbox.id).ReservationDescription.Name
+    for resources in sandbox.automation_api.GetReservationDetails(reservationId=sandbox.id).ReservationDescription.Resources:
+        if resources.ResourceModelName == "ApV2":
+            res_name = sandbox_name + " : " + resources.Name.split("-")[-1]
+            break
+    sandbox.automation_api.UpdateReservationName(reservationId=sandbox.id, name=res_name)
+
 
 def helm_install(sandbox, components):
     try:
@@ -31,10 +39,7 @@ def helm_install(sandbox, components):
                                                                                                               owfms_version,
                                                                                                               owgwui_version,
                                                                                                               owprov_version,
-                                                                                                              owprovui_version,
-                                                                                                              owanalytics_version,
-                                                                                                              owsub_version,
-                                                                                                              owrrm_version])
+                                                                                                              owprovui_version,owanalytics_version,owsub_version,owrrm_version])
         else:
             sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, 'Using Existing SDK')
 
@@ -94,6 +99,7 @@ def factory_reset(api,res_id,ap_res,terminal_server):
         time.sleep(180)
         api.WriteMessageToReservationOutput(sandbox.id, "Sleep timer ended")
 
+
      #   res = api.ExecuteResourceConnectedCommand(res_id, ap_res.Name,"Run_Script",inputs)
 
     except Exception as e:
@@ -130,7 +136,7 @@ def execute_terminal_script(sandbox, components):
                 pool.join()
 
                 for i in range(len(ap_resources)):
-                    if async_results[i].successful() == False:
+                    if not async_results[i].successful():
                         raise Exception('Caught exception in Factory Reset')
 
             except Exception as e:
@@ -143,15 +149,25 @@ def execute_terminal_script(sandbox, components):
 
 def check_lab_type(sandbox):
     flag = False
-    for resource in sandbox.automation_api.GetReservationDetails(sandbox.id).ReservationDescription.Resources:
-        if resource.ResourceModelName == 'ApV2':
-            details = sandbox.automation_api.GetResourceDetails(resource.Name)
-            break
+    ap_found = False
+    try:
+        for resource in sandbox.automation_api.GetReservationDetails(sandbox.id).ReservationDescription.Resources:
+            if resource.ResourceModelName == 'ApV2':
+                details = sandbox.automation_api.GetResourceDetails(resource.Name)
+                ap_found= True
+                break
 
-    for attribute in details.ResourceAttributes:
-        if attribute.Name == "Lab Type":
-            return_val = attribute.Value
-            break
+        if ap_found:
+            for attribute in details.ResourceAttributes:
+                if attribute.Name == "Lab Type":
+                    return_val = attribute.Value
+                    break
+        else:
+            raise Exception("Failed: No AP resource in the blueprint")
+
+    except Exception as e:
+        sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, e.message)
+        sandbox.automation_api.EndReservation(sandbox.id)
 
     if return_val in ["Basic", "Advanced"]:
         flag = True
@@ -161,6 +177,8 @@ def check_lab_type(sandbox):
 
 sandbox = Sandbox()
 DefaultSetupWorkflow().register(sandbox)
+if check_lab_type(sandbox):
+    sandbox.workflow.add_to_provisioning(rename_sandbox, [])
 sandbox.workflow.add_to_provisioning(helm_install, [])
 sandbox.workflow.on_provisioning_ended(ap_redirect, [])
 sandbox.workflow.on_provisioning_ended(execute_terminal_script, [])
