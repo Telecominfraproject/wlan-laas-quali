@@ -1,0 +1,187 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+metadata:
+  template_name: Trafficgenerator
+  template_author: Anonymous
+  template_version: 0.1.0
+  template_icon: shell-icon.png
+
+description: >
+  TOSCA based resource shell
+
+imports:
+  - cloudshell_standard: cloudshell_resource_standard_2_0_3.yaml
+
+node_types:
+
+  vendor.resource.Trafficgenerator:
+    derived_from: cloudshell.nodes.GenericResource
+    properties:
+      TG Model:
+        type: string
+        tags: [setting, configuration, search_filter, abstract_filter]
+      TG Port:
+        type: string
+        default: 8080
+        tags: [setting, configuration, search_filter, abstract_filter]
+      Serial Number:
+        type: string
+        tags: [setting, configuration, search_filter, abstract_filter]
+      TG 2dot4G Radio:
+        type: string
+        default: wiphy4
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [wiphy0, wiphy1, wiphy2, wiphy3, wiphy4, wiphy5, wiphy6, "1.1.wiphy0, 1.1.wiphy2", 1.1.wiphy0, 1.1.wiphy1, 1.1.wiphy2, 1.1.wiphy3, 1.1.wiphy4, 1.1.wiphy5, 1.1.wiphy6]
+      TG 5G Radio:
+        type: string
+        default: wiphy5
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [wiphy0, wiphy1, wiphy2, wiphy3, wiphy4, wiphy5, wiphy6, "1.1.wiphy1, 1.1.wiphy3", 1.1.wiphy0, 1.1.wiphy1, 1.1.wiphy2, 1.1.wiphy3, 1.1.wiphy4, 1.1.wiphy5, 1.1.wiphy6]
+      TG AX Radio:
+        type: string
+        default: wiphy0 wiphy1 wiphy2 wiphy3
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [wiphy0 wiphy1 wiphy2 wiphy3, wiphy4 wiphy5 wiphy6 wiphy7, "1.1.wiphy4, 1.1.wiphy5, 1.1.wiphy6, 1.1.wiphy7","1.1.wiphy0, 1.1.wiphy1, 1.1.wiphy2, 1.1.wiphy3"]
+      Upstream:
+        type: string
+        default: eth2
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [eth1, eth2, 1.1.eth2, 1.1.eth1, 1.3.eth2]
+      TG 2dot4G Station Name:
+        type: string
+        default: wlan0
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [wlan0, wlan1, sta0000, wiphy0 wiphy2]
+      TG 5G Station Name:
+        type: string
+        default: wlan1
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [wlan0, wlan1, sta1000, wiphy1 wiphy3]
+      TG AX Station Name:
+        type: string
+        default: ax
+        tags: [setting, configuration, search_filter, abstract_filter]
+        constraints:
+          - valid_values: [ax, sta002]
+      TG ssh_port:
+        type: integer
+        default: 22
+        tags: [setting, configuration, search_filter, abstract_filter]
+      TG upstream_subnet:
+        type: string
+        default: 10.28.2.1/24
+        tags: [setting, configuration, search_filter, abstract_filter]
+      TG uplink:
+        type: string
+        default: 1.1.eth3
+        tags: [setting, configuration, search_filter, abstract_filter]
+      model:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      serial_number:
+        type: integer
+        default: 8080
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      lf_serial_number:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      port:
+        type: integer
+        default: 8080
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      ssh_port:
+        type: integer
+        default: 22
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      lf_2dot4G_Radio:
+        type: string
+        default: 1.1.wiphy4
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      lf_5G_Radio:
+        type: string
+        default: 1.1.wiphy5
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      AX_Radio:
+        type: string
+        default: 1.1.wiphy0, 1.1.wiphy1, 1.1.wiphy2, 1.1.wiphy3
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      upstream_subnet:
+        type: string
+        default: 10.28.2.1/24
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      uplink:
+        type: string
+        default: 1.1.eth3
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      lf_2dot4G_Station_Name:
+        type: string
+        default: wlan0
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      lf_5G_Station_Name:
+        type: string
+        default: wlan1
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      AX_Station_Name:
+        type: string
+        default: ax
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      ip:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      uname:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      passkey:
+        type: cloudshell.datatypes.Password
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      PDU Host:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      PDU User:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      PDU Password:
+        type: cloudshell.datatypes.Password
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+      PDU Port:
+        type: string
+        tags: [ setting, configuration, search_filter, abstract_filter ]
+
+
+
+    capabilities:
+      auto_discovery_capability:
+        type: cloudshell.capabilities.AutoDiscovery
+        properties:
+          enable_auto_discovery:
+            type: boolean
+            default: true
+          auto_discovery_description:
+            type: string
+            default: Describe the auto discovery
+          inventory_description:
+            type: string
+            default: Describe the resource shell template
+          TG Model:
+            type: string
+            tags: [setting, configuration, search_filter, abstract_filter]
+          TG Port:
+            type: string
+            default: 8080
+            tags: [setting, configuration, search_filter, abstract_filter]
+          Serial Number:
+            type: string
+            tags: [setting, configuration, search_filter, abstract_filter]
+    artifacts:
+      icon:
+        file: shell-icon.png
+        type: tosca.artifacts.File
+      driver:
+        file: TrafficgeneratorDriver.zip
+        type: tosca.artifacts.File
