@@ -1,0 +1,86 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+metadata:
+  template_name: Helm Service V2
+  template_author: Anonymous
+  template_version: 0.1.0
+  template_icon: shell-icon.png
+
+description: >
+  TOSCA based service shell
+
+imports:
+  - cloudshell_standard: cloudshell_custom_service_standard_1_0_0.yaml
+
+node_types:
+
+  vendor.resource.Helm Service V2:
+    derived_from: cloudshell.nodes.CustomService
+    properties:
+      Github Repo URL:
+        description: "GitHub URL to helm files."
+        type: string
+        tags: [ user_input ]
+      Github Repo branch:
+        description: "Github Repo Branch."
+        type: string
+        tags: [ user_input ]
+      Github Repo Path to Chart:
+        description: "Path to Helm chart within GitHub repo."
+        type: string
+        tags: [ user_input ]
+      Helm Deploy Script URL:
+        description: "URL to windows batch file to prep and run Helm Install."
+        type: string
+        tags: [ user_input ]
+      RTTY_TOKEN:
+        description: "RTTY_TOKEN"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      UCENTRALGW_AUTH_USERNAME:
+        description: "UCENTRALGW_AUTH_USERNAME"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      UCENTRALGW_AUTH_PASSWORD:
+        description: "UCENTRALGW_AUTH_PASSWORD"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      UCENTRALFMS_S3_SECRET:
+        description: "UCENTRALFMS_S3_SECRET"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      UCENTRALFMS_S3_KEY:
+        description: "UCENTRALFMS_S3_KEY"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      OWGW_AUTH_USERNAME:
+        description: "OWGW_AUTH_USERNAME"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      OWGW_AUTH_PASSWORD:
+        description: "OWGW_AUTH_PASSWORD"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      OWFMS_S3_SECRET:
+        description: "OWFMS_S3_SECRET"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      OWFMS_S3_KEY:
+        description: "OWFMS_S3_KEY"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+      User:
+        description: "SDK username"
+        type: string
+        tags: [ user_input ]
+      Password:
+        description: "SDK Password"
+        type: cloudshell.datatypes.Password
+        tags: [ user_input ]
+    artifacts:
+      icon:
+        file: shell-icon.png
+        type: tosca.artifacts.File
+      driver:
+        file: HelmServiceV2Driver.zip
+        type: tosca.artifacts.File
