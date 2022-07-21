@@ -85,18 +85,27 @@ def execute_terminal_script(sandbox, components):
     else:
         sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, "No Terminal Server in reservation")
 
-
 def check_lab_type(sandbox):
     flag = False
-    for resource in sandbox.automation_api.GetReservationDetails(sandbox.id).ReservationDescription.Resources:
-        if resource.ResourceModelName == 'ApV2':
-            details = sandbox.automation_api.GetResourceDetails(resource.Name)
-            break
+    ap_found = False
+    return_val = ""
+    try:
+        for resource in sandbox.automation_api.GetReservationDetails(sandbox.id).ReservationDescription.Resources:
+            if resource.ResourceModelName == 'ApV2':
+                details = sandbox.automation_api.GetResourceDetails(resource.Name)
+                ap_found= True
+                break
 
-    for attribute in details.ResourceAttributes:
-        if attribute.Name == "Lab Type":
-            return_val = attribute.Value
-            break
+        if ap_found:
+            for attribute in details.ResourceAttributes:
+                if attribute.Name == "Lab Type":
+                    return_val = attribute.Value
+                    break
+        else:
+            raise Exception("Failed: No AP resource in the blueprint")
+
+    except Exception as e:
+        sandbox.automation_api.WriteMessageToReservationOutput(sandbox.id, e.message)
 
     if return_val in ["Basic", "Advanced"]:
         flag = True
