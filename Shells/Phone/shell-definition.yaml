@@ -1,59 +1,33 @@
----
-description: "TOSCA based resource shell\n"
-imports:
-  -
-    cloudshell_standard: cloudshell_resource_standard_2_0_3.yaml
+tosca_definitions_version: tosca_simple_yaml_1_0
+
 metadata:
-  template_author: Anonymous
-  template_icon: shell-icon.png
   template_name: Phone
-  template_version: "0.1.0"
+  template_author: Anonymous
+  template_version: 0.1.0
+  template_icon: shell-icon.png
+
+description: >
+  TOSCA based resource shell
+
+imports:
+  - cloudshell_standard: cloudshell_resource_standard_2_0_3.yaml
+
 node_types:
+
   vendor.resource.Phone:
-    artifacts:
-      driver:
-        file: PhoneDriver.zip
-        type: tosca.artifacts.File
-      icon:
-        file: shell-icon.png
-        type: tosca.artifacts.File
-    capabilities:
-      auto_discovery_capability:
-        properties:
-          OS:
-            constraints:
-              -
-                valid_values:
-                  - iOS
-                  - android
-            default: android
-            description: "Describes what OS the phone is"
-            type: string
-          auto_discovery_description:
-            default: "Describe the auto discovery"
-            type: string
-          enable_auto_discovery:
-            default: true
-            type: boolean
-          inventory_description:
-            default: "Describe the resource shell template"
-            type: string
-          model:
-            description: "Describes what model the phone is"
-            type: string
-          serial:
-            description: "Describes what serial number the phone is"
-            type: string
-        type: cloudshell.capabilities.AutoDiscovery
     derived_from: cloudshell.nodes.GenericResource
+    #properties:
+    #  my_property:
+    #    type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
+    #    default: fast
+    #    description: Some attribute description
+    #    constraints:
+    #      - valid_values: [fast, slow]
     properties:
       OS:
         constraints:
-          -
-            valid_values:
-              - iOS
-              - android
-        default: android
+          - valid_values: [iOS, Android]
+        default: Android
         description: "Describes what OS the phone is"
         type: string
       model:
@@ -62,4 +36,44 @@ node_types:
       serial:
         description: "Describes what serial number the phone is"
         type: string
-tosca_definitions_version: tosca_simple_yaml_1_0
+      reservationNumber:
+        description: "This is not an input, Perfecto reservation number for the phone is stored here when the phone is reserved"
+        type: string
+      Phone_ID:
+        description: "Defines the Phone ID for reservation"
+        type: integer
+    capabilities:
+      auto_discovery_capability:
+        type: cloudshell.capabilities.AutoDiscovery
+        properties:        
+          enable_auto_discovery:
+            type: boolean
+            default: true
+          auto_discovery_description:
+            type: string
+            default: Describe the auto discovery
+          inventory_description:
+            type: string
+            default: Describe the resource shell template
+          OS:
+            constraints:
+              - valid_values: [ iOS, Android ]
+            default: Android
+            description: "Describes what OS the phone is"
+            type: string
+          model:
+            description: "Describes what model the phone is"
+            type: string
+          serial:
+            description: "Describes what serial number the phone is"
+            type: string
+          reservationNumber:
+            description: "This is not an input, Perfecto reservation number for the phone is stored here when the phone is reserved"
+            type: string
+    artifacts:
+      icon:
+        file: shell-icon.png
+        type: tosca.artifacts.File
+      driver:
+        file: PhoneDriver.zip
+        type: tosca.artifacts.File
