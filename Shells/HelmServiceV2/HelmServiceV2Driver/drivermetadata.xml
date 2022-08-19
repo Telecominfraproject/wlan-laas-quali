@@ -1,0 +1,16 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.HelmServiceV2Driver" Name="HelmServiceV2Driver" Version="1.0.0" PythonVersion="3">
+    <Layout>
+        <Command Description="Helm Install" Name="helm_install" DisplayName="Helm Install" Visibility="AdminOnly">
+            <Parameters>
+                <Parameter DefaultValue="main" Description="Chart Version" DisplayName="Chart Version" Mandatory="True" Name="chart_version" Type="String" />
+                <Parameter DefaultValue="master" Description="owgw Version" DisplayName="owgw Version" Mandatory="True" Name="owgw_version" Type="String" />
+                <Parameter DefaultValue="main" Description="owsec Version" DisplayName="owsec Version" Mandatory="True" Name="owsec_version" Type="String" />
+                <Parameter DefaultValue="main" Description="owfms Version" DisplayName="owfms Version" Mandatory="True" Name="owfms_version" Type="String" />
+                <Parameter DefaultValue="main" Description="owgwui Version" DisplayName="owgwui Version" Mandatory="True" Name="owgwui_version" Type="String" />
+                <Parameter DefaultValue="main" Description="owprov Version" DisplayName="owprov Version" Mandatory="True" Name="owprov_version" Type="String" />
+                <Parameter DefaultValue="main" Description="owprovui Version" DisplayName="owprovui Version" Mandatory="True" Name="owprovui_version" Type="String" />
+            </Parameters>
+        </Command>
+        <Command Description="Helm Uninstall" Name="helm_uninstall" DisplayName="Helm Uninstall" Visibility="AdminOnly"/>
+    </Layout>
+</Driver>
