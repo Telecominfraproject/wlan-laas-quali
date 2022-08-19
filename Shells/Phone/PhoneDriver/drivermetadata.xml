@@ -1,0 +1,14 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.PhoneDriver" Name="PhoneDriver" Version="1.0.0">
+    <Layout>
+         <Category Name="Hidden Commands">
+            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save" />
+            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore" />
+            <Command Description="" DisplayName="get_phone_reservation_times" Name="get_phone_reservation_times" />
+            <Command Description="" DisplayName="perfecto_phone_reserve" Name="perfecto_phone_reserve" />
+            <Command Description="" DisplayName="perfecto_phone_unreserve" Name="perfecto_phone_unreserve" />
+        </Category>
+        <Category Name="Phone Commands">
+            <Command Description="Run to reboot phone" DisplayName="Phone Reboot" Name="phone_reboot" />
+        </Category>
+    </Layout>
+</Driver>

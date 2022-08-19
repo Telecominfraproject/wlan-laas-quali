@@ -1,0 +1,24 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.TrafficgeneratorDriver" Name="TrafficgeneratorDriver" Version="1.0.0">
+    <Layout>
+         <Category Name="Hidden Commands">
+            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save" />
+            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore" />
+         </Category>
+         <Category Name="LF Commands">
+            <Command Name="powerThisLF" Description="Use this command to power on / off the current LF using the PDU. Note: This method is unsafe as it can corrupt the file system, use safepowerThisLF instead" DisplayName="powerThisLF" Visibility="AdminOnly">
+                <Parameters>
+                    <Parameter Name="cmd" DisplayName="cmd" Type="Lookup" Mandatory="True" AllowedValues="off,on" DefaultValue="on"/>
+                </Parameters>
+            </Command>
+            <Command Name="safepowerThisLF" Description="This command allows for a safe way to turn on / off the LF without corrupting the file system" DisplayName="safepowerThisLF">
+                <Parameters>
+                    <Parameter Name="cmd" DisplayName="cmd" Type="Lookup" Mandatory="True" AllowedValues="off,on" DefaultValue="on"/>
+                </Parameters>
+            </Command>
+            <Command Description="Reboots the LF, use checkUpTime to see if LF has been rebooted" DisplayName="rebootLF" Name="rebootLF" ></Command>
+            <Command Description="Safely power cycles the LF via the PDU" DisplayName="safepduPowerCycle" Name="safepduPowerCycle" ></Command>
+            <Command Description="Power cycles the LF via the PDU. Note: This method is unsafe as it can corrupt the file system, use safepduPowerCycle instead" DisplayName="pduPowerCycle" Name="pduPowerCycle" Visibility="AdminOnly"></Command>
+            <Command Description="checks the uptime of the LF, can help determine when the last reboot took place by returning time since last reboot" DisplayName="checkUpTime" Name="checkUpTime" ></Command>
+         </Category>
+    </Layout>
+</Driver>

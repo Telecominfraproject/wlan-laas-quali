@@ -1,0 +1,28 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.ApV2Driver" Name="ApV2Driver" Version="1.0.0">
+    <Layout>
+        <Category Name="Hidden Commands">
+            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save" />
+            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore" />
+            <Command Description="" DisplayName="apRedirect" Name="apRedirect">
+                <Parameters>
+                    <Parameter Name="namespace" DisplayName="namespace" Type="String" Mandatory="True" DefaultValue="qa01"/>
+                </Parameters>
+            </Command>
+        </Category>
+        <Category Name = "AP Commands">
+            <Command Name="powerOtherAps" Description="Use this command to power on or off all other AP's in this chamber using the PDU" DisplayName="powerOtherAPs">
+                <Parameters>
+                    <Parameter Name="cmd" DisplayName="cmd" Type="String" Mandatory="True" DefaultValue="on"/>
+                </Parameters>
+            </Command>
+            <Command Name="powerThisAp" Description="Use this command to power on or off the current AP using the PDU" DisplayName="powerThisAp">
+                <Parameters>
+                    <Parameter Name="cmd" DisplayName="cmd" Type="Lookup" AllowedValues="Yes,No" Mandatory="True" DefaultValue="on"/>
+                </Parameters>
+            </Command>
+            <Command Name="rebootAP" Description="Reboots the AP, use checkUpTime to see if LF has been rebooted" DisplayName="rebootAP" > </Command>
+            <Command  Name="pduPowerCycle" Description="Power cycles the AP via the PDU" DisplayName="pduPowerCycle" > </Command>
+            <Command Name="checkUpTime" Description="checks the uptime of the AP, can help determine when the last reboot took place by returning time since last reboot" DisplayName="checkUpTime" > </Command>
+        </Category>
+    </Layout>
+</Driver>

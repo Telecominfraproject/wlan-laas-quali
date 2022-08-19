@@ -1,0 +1,20 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.ControllerVmDriver" Name="ControllerVmDriver" Version="1.0.0">
+    <Layout>
+         <Category Name="Hidden Commands">
+            <Command Description="" DisplayName="Orchestration Save" Name="orchestration_save" />
+            <Command Description="" DisplayName="Orchestration Restore" Name="orchestration_restore" />
+         </Category>
+
+         <Command Name="Run_Ap_Factory_Reset" Description="" DisplayName="Run_Ap_Factory_Reset">
+            <Parameters>
+                <Parameter Name="ap_user" DisplayName="ap_user" Type="String" Mandatory="True" DefaultValue=""/>
+                <Parameter Name="ap_password" DisplayName="ap_password" Type="String" Mandatory="True" DefaultValue=""/>
+                <Parameter Name="ap_tty" DisplayName="ap_tty" Type="String" Mandatory="True" DefaultValue=""/>
+                <Parameter Name="ap_ip" DisplayName="ap_ip" Type="String" Mandatory="True" DefaultValue=""/>
+                <Parameter Name="ap_jumphost" DisplayName="ap_jumphost" Type="String" Mandatory="True" DefaultValue=""/>
+                <Parameter Name="ap_port" DisplayName="ap_port" Type="String" Mandatory="True" DefaultValue=""/>
+            </Parameters>
+         </Command>
+
+    </Layout>
+</Driver>
