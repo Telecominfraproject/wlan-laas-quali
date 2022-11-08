@@ -17,6 +17,13 @@ Teardown Scripts will be run on the Sandbox level and will be run automatically 
 The Scripts folder contains any CloudShell related scripts that need a repo to live in.<br>
 These can include scripts that CloudShell will download and run from this repo or scripts to be run externally that interact with CloudShell through any of it's APIs.
 
+The terminal_server_setup.py script can be run as follows:
+1. SSH into the terminal server you want to setup
+2. Make sure github is installed by running " git --version" , if it is not installed use "pip install git", "sudo yum install git" or "yum install git".
+3. Run the following commands
+git clone https://github.com/Telecominfraproject/wlan-laas-quali
+python3 wlan-laas-quali/Scripts/terminal_server_setup.py
+
 ## Shells
 
 The Shells folder contains any resource Shells created and used within CloudShell. Shells contain code to create an instance within CloudShell of any physical or virtual resource to be used within a Sandbox environment.
