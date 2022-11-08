@@ -21,7 +21,9 @@ The terminal_server_setup.py script can be run as follows:
 1. SSH into the terminal server you want to setup
 2. Make sure github is installed by running " git --version" , if it is not installed use "pip install git", "sudo yum install git" or "yum install git".
 3. Run the following commands
+
 git clone https://github.com/Telecominfraproject/wlan-laas-quali
+
 python3 wlan-laas-quali/Scripts/terminal_server_setup.py
 
 ## Shells
