@@ -153,7 +153,8 @@ class ApV2Driver (ResourceDriverInterface):
                 s = paramiko.SSHClient()
                 s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 s.connect(hostname=terminal_ip, username=terminal_user,password=terminal_pass)
-                unique_dir_name = res_id + ap_tty[-1]
+
+                unique_dir_name = res_id + ap_tty.split("/")[-1]
                 command = 'cd /tmp ; mkdir {} ; cd {} ; git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing/tools && git checkout master && chmod +x digicert-change-ap-redirector.sh'.format(
                     unique_dir_name, unique_dir_name)
                 serial_no = resource.attributes['{}.serial'.format(resource.cloudshell_model_name)]
@@ -164,12 +165,12 @@ class ApV2Driver (ResourceDriverInterface):
                 exit_status = stdout.channel.recv_exit_status()
                 if exit_status == 0:
                     api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                'command 1 executed')
+                                                                'command 1 executed: Created github repo wlan testing, ready to run ap redirector script for AP {}'.format(context.resource.name))
                 (stdin2, stdout2, stderr2) = s.exec_command(command2)
                 exit_status = stdout2.channel.recv_exit_status()
                 if exit_status == 0:
                     api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                'command 2 executed')
+                                                                'command 2 executed: Script digicert-change-ap-redirector.sh was executed for AP : {}'.format(context.resource.name))
 
                 output = ''
                 errors = ''
@@ -178,16 +179,16 @@ class ApV2Driver (ResourceDriverInterface):
                 for line in stderr2.readlines():
                     errors += line
                 if stdout2.channel.recv_exit_status() != 0:
-                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'AP Redirect failed on address {}: '.format(context.resource.address) + errors)
-                    raise Exception('Error executing Script: ' + errors)
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'AP Redirect failed on address {} and AP {}: '.format(context.resource.address, context.resource.name) + errors)
+                    raise Exception('Error executing Script digicert-change-ap-redirector.sh: ' + errors)
                 else:
                     api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,output)
                     api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                'AP Redirect Executed successfully.')
+                                                                'AP Redirect Executed successfully on AP: {}'.format(context.resource.name))
                 (stdin3, stdout3, stderr3) = s.exec_command(command3)
                 exit_status = stdout3.channel.recv_exit_status()
                 if exit_status == 0:
-                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 3 executed')
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 3 executed: removed wlan testing repo for AP: {}'.format(context.resource.name))
                 s.close()
 
     def powerOtherAPs(self, context, cmd='on'):
@@ -233,14 +234,14 @@ class ApV2Driver (ResourceDriverInterface):
                         (stdin, stdout, stderr) = s.exec_command(command)
                         exit_status = stdout.channel.recv_exit_status()
                         if exit_status == 0:
-                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
+                                                                'command 1 executed: Created github repo wlan testing, ready to run PDU script for AP {}'.format(context.resource.name))
 
                         (stdin2, stdout2, stderr2) = s.exec_command(command2)
                         exit_status = stdout2.channel.recv_exit_status()
                         if exit_status == 0:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                        'command 2 executed')
-
+                                                                'command 2 executed: Script {} was executed for AP {}'.format(PDU_SCRIPT_NAME,context.resource.name))
                         output = ''
                         errors = ''
                         for line in stdout.readlines():
@@ -248,12 +249,17 @@ class ApV2Driver (ResourceDriverInterface):
                         for line in stderr.readlines():
                             errors += line
                         if stdout2.channel.recv_exit_status() != 0:
-                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'PDU Power command failed: ' + errors)
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'PDU Power command failed on AP: {}. Check script {}'.format(context.resource.name,PDU_SCRIPT_NAME) + errors)
                             raise Exception(errors)
                         else:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id, '{} Powered {}.'.format(each.Name, cmd))
 
                         (stdin3, stdout3, stderr3) = s.exec_command(command3)
+                        exit_status = stdout3.channel.recv_exit_status()
+                        if exit_status == 0:
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
+                                                                        'command 3 executed: removed wlan testing repo for AP: {}'.format(
+                                                                            context.resource.name))
                         s.close()
 
                 else:
@@ -293,7 +299,8 @@ class ApV2Driver (ResourceDriverInterface):
                 (stdin, stdout, stderr) = s.exec_command(command)
                 exit_status = stdout.channel.recv_exit_status()
                 if exit_status == 0:
-                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
+                                                                'command 1 executed: Created github repo wlan testing')
 
                 (stdin2, stdout2, stderr2) = s.exec_command(command2)
                 exit_status = stdout2.channel.recv_exit_status()
@@ -316,6 +323,11 @@ class ApV2Driver (ResourceDriverInterface):
                     api_session.WriteMessageToReservationOutput(context.reservation.reservation_id, '{} Powered {}.'.format(context.resource.name, cmd))
 
                 (stdin3, stdout3, stderr3) = s.exec_command(command3)
+                exit_status = stdout3.channel.recv_exit_status()
+                if exit_status == 0:
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
+                                                                'command 3 executed: removed wlan testing repo for AP: {}'.format(
+                                                                    context.resource.name))
                 s.close()
 
     def rebootAP(self, context):
@@ -377,8 +389,8 @@ class ApV2Driver (ResourceDriverInterface):
                 (stdin3, stdout3, stderr3) = s.exec_command(command3)
                 exit_status = stdout3.channel.recv_exit_status()
                 if exit_status == 0:
-                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                'command 3 executed')
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 3 executed: removed wlan testing repo for AP: {}'.format(context.resource.name))
+
 
                 api_session.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Waiting two minutes for reboot to complete...')
                 time.sleep(120)
@@ -454,8 +466,7 @@ class ApV2Driver (ResourceDriverInterface):
                 (stdin3, stdout3, stderr3) = s.exec_command(command3)
                 exit_status = stdout3.channel.recv_exit_status()
                 if exit_status == 0:
-                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                'command 3 executed')
+                    api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 3 executed: removed wlan testing repo for AP: {}'.format(context.resource.name))
                 api_session.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Uptime output below:')
                 api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,output)
                 s.close()

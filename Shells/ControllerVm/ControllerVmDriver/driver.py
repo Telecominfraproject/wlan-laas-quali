@@ -87,8 +87,10 @@ class ControllerVmDriver (ResourceDriverInterface):
 
                     s = paramiko.SSHClient()
                     s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    s.connect(hostname=context.resource.address, username=username, password=api_session.DecryptPassword(password).Value)
-                    unique_dir_name = res_id + ap_tty[-1]
+                    # modified hostname to ap_ip since it is the same as that of the ip on the ap
+                    # previously hostname was context.resource.address
+                    s.connect(hostname=ap_ip, username=username, password=api_session.DecryptPassword(password).Value)
+                    unique_dir_name = res_id + ap_tty.split("/")[-1]
                     command = 'cd /tmp ; mkdir {} ; cd {} ; git clone --single-branch --branch master --depth 1 https://github.com/Telecominfraproject/wlan-testing.git; cd wlan-testing && git checkout master && cd tools && chmod +x ap_tools.py'.format(
                         unique_dir_name, unique_dir_name)
                     command2 = 'cd /tmp/{}/wlan-testing/tools && python3 ap_tools.py --host {} --jumphost {} --tty {} --port {} --username {} --password {} --cmd "jffs2reset -y -r"'.format(unique_dir_name, ap_ip, ap_jumphost, ap_tty, ap_port, ap_user,api_session.DecryptPassword(ap_password).Value)
@@ -97,12 +99,12 @@ class ControllerVmDriver (ResourceDriverInterface):
                     (stdin, stdout, stderr) = s.exec_command(command)
                     exit_status = stdout.channel.recv_exit_status()
                     if exit_status==0:
-                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed. Created github repo wlan testing, ready to run ap factory script for ap: {}'.format(ap_tty))
                     (stdin2, stdout2, stderr2) = s.exec_command(command2)
                     exit_status = stdout2.channel.recv_exit_status()
                     if exit_status == 0:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'command 2 executed')
+                                                                    'command 2 executed, executed run ap factory reset script for ap: {}'.format(ap_tty))
 
 
                     output = ''
@@ -113,23 +115,23 @@ class ControllerVmDriver (ResourceDriverInterface):
                         errors += line
                     if stdout2.channel.recv_exit_status() != 0:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'AP Factory Reset failed on address {}: '.format(context.resource.address) + errors)
-                        raise Exception('Error executing Script: ' + errors)
+                                                                    'AP Factory Reset failed on address {} and ap {}: '.format(ap_ip,ap_tty) + errors)
+                        raise Exception('Error executing Script AP Factory reset for ap {}: '.format(ap_tty) + errors)
                     else:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'AP Factory Reset Complete.')
+                                                                    'AP Factory Reset Complete for ap {}.'.format(ap_tty))
                     (stdin3, stdout3, stderr3) = s.exec_command(command3)
                     exit_status = stdout3.channel.recv_exit_status()
                     if exit_status == 0:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'command 3 executed')
+                                                                    'command 3 executed: removed wlan testing repo for AP: {}'.format(ap_tty))
                     s.close()
 
                     return output
 
         except Exception as e:
-            logger.info("Error executing Script: {}".format(e.message))
-            raise Exception('Error executing Script: ' + e.message)
+            logger.info("Error executing AP Factory reset Script: {} for AP {}".format(e.message,ap_tty))
+            raise Exception('Error executing AP Factory Reset Script for AP {}: '.format(ap_tty) + e.message)
 
 
     # <editor-fold desc="Orchestration Save and Restore Standard">

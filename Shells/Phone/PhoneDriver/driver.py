@@ -193,13 +193,12 @@ class PhoneDriver (ResourceDriverInterface):
                     (stdin, stdout, stderr) = s.exec_command(command)
                     exit_status = stdout.channel.recv_exit_status()
                     if exit_status == 0:
-                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed: Created github repo wlan testing, ready to run phone reserve script for phone: {}'.format(context.resource.name))
                     (stdin2, stdout2, stderr2) = s.exec_command(command2)
                     exit_status = stdout2.channel.recv_exit_status()
                     if exit_status == 0:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'command 2 executed')
-
+                                                                    'command 2 executed: Script perfecto_phone reserve was executed for phone: {}'.format(context.resource.name))
                     output = ''
                     errors = ''
                     for line in stdout2.readlines():
@@ -212,18 +211,18 @@ class PhoneDriver (ResourceDriverInterface):
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
                                                                     'Phone  reservation failed on {}: '.format(
                                                                         context.resource.address) + errors)
-                        raise Exception('Error executing Script: ' + errors)
+                        raise Exception('Error executing Phone reservation Script on {}: '.format(context.resource.name) + errors)
                     else:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'Perfecto Phone reservation Complete.')
+                                                                    'Perfecto Phone reservation Complete for Phone: {}.'.format(context.resource.name))
                     (stdin3, stdout3, stderr3) = s.exec_command(command3)
                     s.close()
 
                     return output
 
         except Exception as e:
-            logger.info("Error executing Script: {}".format(e.message))
-            raise Exception('Error executing Script: ' + e.message)
+            logger.info("Error executing Script on phone {} : {}".format(context.resource.name,e.message))
+            raise Exception('Error executing Script on {}: '.format(context.resource.name) + e.message)
 
     def phone_reboot(self,context, cancellation_context):
 
@@ -258,12 +257,12 @@ class PhoneDriver (ResourceDriverInterface):
                     (stdin, stdout, stderr) = s.exec_command(command)
                     exit_status = stdout.channel.recv_exit_status()
                     if exit_status == 0:
-                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                        api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed: Created github repo wlan testing, ready to run phone reboot script for phone: {}'.format(device_name))
                     (stdin2, stdout2, stderr2) = s.exec_command(command2)
                     exit_status = stdout2.channel.recv_exit_status()
                     if exit_status == 0:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'command 2 executed')
+                                                                    'command 2 executed. Phone reboot executed on {}'.format(device_name))
 
                     output = ''
                     errors = ''
@@ -276,18 +275,18 @@ class PhoneDriver (ResourceDriverInterface):
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
                                                                     'Starting Phone  reboot on {}: '.format(
                                                                         device_name) + errors)
-                        raise Exception('Error executing Script: ' + errors)
+                        raise Exception('Error executing Script on {}: '.format(device_name) + errors)
                     else:
                         api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                    'Phone reboot complete')
+                                                                    'Phone reboot complete for phone {}'.format(device_name))
                     (stdin3, stdout3, stderr3) = s.exec_command(command3)
                     s.close()
 
                     return output
 
         except Exception as e:
-            logger.info("Error executing Script: {}".format(e.message))
-            raise Exception('Error executing Script: ' + e.message)
+            logger.info("Error executing Phone Reboot Script on {} : {}".format(device_name,e.message))
+            raise Exception('Error executing Phone Reboot Script on {}: '.format(device_name) + e.message)
 
 
 
@@ -323,12 +322,12 @@ class PhoneDriver (ResourceDriverInterface):
                         (stdin, stdout, stderr) = s.exec_command(command)
                         exit_status = stdout.channel.recv_exit_status()
                         if exit_status == 0:
-                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed')
+                            api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,'command 1 executed, Created github repo wlan testing, ready to run phone reboot script for phone: {}'.format(context.resource.name))
                         (stdin2, stdout2, stderr2) = s.exec_command(command2)
                         exit_status = stdout2.channel.recv_exit_status()
                         if exit_status == 0:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                        'command 2 executed')
+                                                                        'command 2 executed. Phone unreservation executed on {}'.format(context.resource.name))
 
                         output = ''
                         errors = ''
@@ -338,12 +337,12 @@ class PhoneDriver (ResourceDriverInterface):
                             errors += line
                         if stdout2.channel.recv_exit_status() != 0:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                        'Phone  unreservation failed on {}: '.format(
-                                                                            context.resource.address) + errors)
-                            raise Exception('Error executing Script: ' + errors)
+                                                                        'Phone  unreservation failed on address {} and phone {}: '.format(
+                                                                            context.resource.address,context.resource.name) + errors)
+                            raise Exception('Error executing Phone unreserve Script on {}: '.format(context.resource.name) + errors)
                         else:
                             api_session.WriteMessageToReservationOutput(context.reservation.reservation_id,
-                                                                        'Perfecto Phone unreservation Complete.')
+                                                                        'Perfecto Phone unreservation Complete on {}.'.format(context.resource.name))
 
                         api_session.SetAttributeValue(resourceFullPath=context.resource.name, attributeName="Phone.reservationNumber",attributeValue="")
 
@@ -353,8 +352,8 @@ class PhoneDriver (ResourceDriverInterface):
                         return output
 
         except Exception as e:
-            logger.info("Error executing Script: {}".format(e.message))
-            raise Exception('Error executing Script: ' + e.message)
+            logger.info("Error executing Phone Unreserve Script on {} : {}".format(context.resource.name,e.message))
+            raise Exception('Error executing phone unreservation Script on {}: '.format(context.resource.name) + e.message)
     # <editor-fold desc="Orchestration Save and Restore Standard">
 
     # </editor-fold>
